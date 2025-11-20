@@ -2,6 +2,8 @@
 
 一个现代化的 HTTP 请求测试工具。
 
+![Httping 应用界面](public/app-screenshot.png)
+
 ---
 
 ## 功能特性
