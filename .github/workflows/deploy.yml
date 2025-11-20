@@ -130,7 +130,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=httping
+          command: pages deploy dist --project-name=perlou-httping
       
       - name: Deployment summary
         run: |
@@ -180,7 +180,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=httping --branch=preview-${{ github.event.pull_request.number }}
+          command: pages deploy dist --project-name=perlou-httping --branch=preview-${{ github.event.pull_request.number }}
       
       - name: Comment on PR
         uses: actions/github-script@v7

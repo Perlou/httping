@@ -17,7 +17,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 项目配置
-PROJECT_NAME="httping"
+PROJECT_NAME="perlou-httping"
 BUILD_DIR="dist"
 NODE_MIN_VERSION=18
 
