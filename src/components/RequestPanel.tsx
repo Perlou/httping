@@ -1,5 +1,6 @@
 import { useRequestStore } from "../store/useRequestStore";
 import { sendHttpRequest, replaceEnvVariables } from "../utils/http";
+import { RequestTabs } from "./RequestTabs";
 
 export function RequestPanel() {
   const {
@@ -103,27 +104,8 @@ export function RequestPanel() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
-        <div className="flex space-x-1 px-4">
-          <button className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400">
-            Headers
-          </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-            Body
-          </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-            Auth
-          </button>
-        </div>
-      </div>
-
-      {/* Tab content */}
-      <div className="flex-1 p-4 overflow-auto">
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          Headers panel (to be implemented)
-        </div>
-      </div>
+      {/* Request configuration tabs */}
+      <RequestTabs />
     </div>
   );
 }
