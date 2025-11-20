@@ -1,6 +1,7 @@
 import { useRequestStore } from "../store/useRequestStore";
 import { sendHttpRequest, replaceEnvVariables } from "../utils/http";
 import { RequestTabs } from "./RequestTabs";
+import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 
 export function RequestPanel() {
   const {
@@ -59,7 +60,10 @@ export function RequestPanel() {
       // Add to history
       try {
         addToHistory({
-          request: processedRequest,
+          request: {
+            ...processedRequest,
+            id: crypto.randomUUID(), // Generate unique ID for each history item
+          },
           response,
           timestamp: Date.now(),
         });
@@ -80,6 +84,23 @@ export function RequestPanel() {
       setIsLoading(false);
     }
   };
+
+  const handleClearResponse = () => {
+    setCurrentResponse(null);
+  };
+
+  // Keyboard shortcuts
+  useKeyboardShortcut(
+    "Enter",
+    () => {
+      if (!isLoading) {
+        handleSend();
+      }
+    },
+    true
+  ); // Ctrl/Cmd + Enter
+
+  useKeyboardShortcut("k", handleClearResponse, true); // Ctrl/Cmd + K
 
   return (
     <div className="flex-1 flex flex-col bg-surface dark:bg-gray-800 border-r border-outline/20 dark:border-gray-700">

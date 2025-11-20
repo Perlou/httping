@@ -27,6 +27,16 @@ export interface HistoryItem {
   timestamp: number;
 }
 
+// Saved Request Template
+export interface SavedRequest {
+  id: string;
+  name: string;
+  request: HttpRequest;
+  authConfig?: AuthConfig;
+  createdAt: number;
+  updatedAt: number;
+}
+
 // Environment types
 export interface Environment {
   id: string;
@@ -35,11 +45,26 @@ export interface Environment {
 }
 
 // Auth types
-export type AuthType = "none" | "bearer" | "basic";
+export type AuthType =
+  | "none"
+  | "bearer"
+  | "basic"
+  | "apikey"
+  | "jwt"
+  | "oauth2";
 
 export interface AuthConfig {
   type: AuthType;
+  // Bearer Token & JWT
   token?: string;
+  // Basic Auth
   username?: string;
   password?: string;
+  // API Key
+  apiKey?: string;
+  apiKeyName?: string;
+  apiKeyLocation?: "header" | "query";
+  // OAuth 2.0
+  accessToken?: string;
+  tokenType?: string;
 }

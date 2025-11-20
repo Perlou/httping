@@ -13,11 +13,19 @@ export async function sendHttpRequest(
   try {
     // Apply auth configuration to headers
     const headers = { ...request.headers };
+    let url = request.url;
 
     if (authConfig && authConfig.type !== "none") {
+      // Bearer Token
       if (authConfig.type === "bearer" && authConfig.token) {
         headers["Authorization"] = `Bearer ${authConfig.token}`;
-      } else if (
+      }
+      // JWT (same as Bearer)
+      else if (authConfig.type === "jwt" && authConfig.token) {
+        headers["Authorization"] = `Bearer ${authConfig.token}`;
+      }
+      // Basic Auth
+      else if (
         authConfig.type === "basic" &&
         authConfig.username &&
         authConfig.password
@@ -27,11 +35,32 @@ export async function sendHttpRequest(
         );
         headers["Authorization"] = `Basic ${credentials}`;
       }
+      // API Key
+      else if (
+        authConfig.type === "apikey" &&
+        authConfig.apiKey &&
+        authConfig.apiKeyName
+      ) {
+        if (authConfig.apiKeyLocation === "header") {
+          // Add to header
+          headers[authConfig.apiKeyName] = authConfig.apiKey;
+        } else if (authConfig.apiKeyLocation === "query") {
+          // Add to query parameter
+          const urlObj = new URL(url);
+          urlObj.searchParams.set(authConfig.apiKeyName, authConfig.apiKey);
+          url = urlObj.toString();
+        }
+      }
+      // OAuth 2.0
+      else if (authConfig.type === "oauth2" && authConfig.accessToken) {
+        const tokenType = authConfig.tokenType || "Bearer";
+        headers["Authorization"] = `${tokenType} ${authConfig.accessToken}`;
+      }
     }
 
     // Build axios config
     const config: AxiosRequestConfig = {
-      url: request.url,
+      url,
       method: request.method,
       headers,
       data: request.body ? JSON.parse(request.body) : undefined,
