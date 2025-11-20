@@ -4,11 +4,15 @@
 
 一个现代化的 HTTP 请求测试工具。
 
-[![Deploy](https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare)](https://perlou-httping.pages.dev)
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-black?logo=github)](https://github.com/Perlou/httping)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+## 🔗 相关链接
 
-**[在线体验](https://perlou-httping.pages.dev)**
+- **[在线演示](https://perlou-httping.pages.dev)** - 立即体验
+- **[GitHub 仓库](https://github.com/Perlou/httping)** - 源代码
+- **[部署指南](DEPLOYMENT.md)** - 完整部署文档
+- **[更新日志](CHANGELOG.md)** - 版本历史
+- **[问题反馈](https://github.com/Perlou/httping/issues)** - 报告问题或建议
+
+![Httping Interface](public/screenshot.png)
 
 </div>
 

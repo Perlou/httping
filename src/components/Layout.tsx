@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useRequestStore } from "../store/useRequestStore";
 import { SponsorModal } from "./SponsorModal";
 import { KeyboardShortcutsHelp } from "./KeyboardShortcutsHelp";
+import packageJson from "../../package.json";
 
 interface LayoutProps {
   children: ReactNode;
@@ -74,7 +75,7 @@ export function Layout({ children }: LayoutProps) {
               Httping
             </h1>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              v1.0.1
+              v{packageJson.version}
             </span>
           </div>
 
