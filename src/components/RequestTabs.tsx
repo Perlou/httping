@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRequestStore } from "../store/useRequestStore";
 import { parseHeaders, stringifyHeaders } from "../utils/http";
+import { AuthConfig } from "./AuthConfig";
 
 type TabType = "headers" | "body" | "auth";
 
@@ -104,34 +105,7 @@ export function RequestTabs() {
 
         {activeTab === "auth" && (
           <div className="h-full p-4">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Auth Type
-                </label>
-                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                  <option value="none">No Auth</option>
-                  <option value="bearer">Bearer Token</option>
-                  <option value="basic">Basic Auth</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Token
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter your token"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                The Authorization header will be automatically added to your
-                request.
-              </div>
-            </div>
+            <AuthConfig />
           </div>
         )}
       </div>

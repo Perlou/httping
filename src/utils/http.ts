@@ -1,20 +1,39 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import type { HttpRequest, HttpResponse } from "../types";
+import type { HttpRequest, HttpResponse, AuthConfig } from "../types";
 
 /**
  * Send an HTTP request using axios
  */
 export async function sendHttpRequest(
-  request: HttpRequest
+  request: HttpRequest,
+  authConfig?: AuthConfig
 ): Promise<HttpResponse> {
   const startTime = Date.now();
 
   try {
+    // Apply auth configuration to headers
+    const headers = { ...request.headers };
+
+    if (authConfig && authConfig.type !== "none") {
+      if (authConfig.type === "bearer" && authConfig.token) {
+        headers["Authorization"] = `Bearer ${authConfig.token}`;
+      } else if (
+        authConfig.type === "basic" &&
+        authConfig.username &&
+        authConfig.password
+      ) {
+        const credentials = btoa(
+          `${authConfig.username}:${authConfig.password}`
+        );
+        headers["Authorization"] = `Basic ${credentials}`;
+      }
+    }
+
     // Build axios config
     const config: AxiosRequestConfig = {
       url: request.url,
       method: request.method,
-      headers: request.headers,
+      headers,
       data: request.body ? JSON.parse(request.body) : undefined,
       // Don't throw on any status code
       validateStatus: () => true,

@@ -11,6 +11,7 @@ export function RequestPanel() {
     setIsLoading,
     addToHistory,
     currentEnvironment,
+    authConfig,
   } = useRequestStore();
 
   const handleSend = async () => {
@@ -35,7 +36,7 @@ export function RequestPanel() {
       };
 
       // Send request
-      const response = await sendHttpRequest(processedRequest);
+      const response = await sendHttpRequest(processedRequest, authConfig);
 
       // Update response
       setCurrentResponse(response);
