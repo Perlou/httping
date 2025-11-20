@@ -1,0 +1,194 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  # 仅允许手动触发，不自动部署
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '部署环境'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+  # 保留 PR 预览功能
+  pull_request:
+    branches:
+      - main
+
+# 取消正在运行的旧部署
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ==========================================
+  # 代码质量检查
+  # ==========================================
+  quality-check:
+    name: Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: TypeScript check
+        run: npx tsc --noEmit
+      
+      - name: Run tests
+        run: npm test -- --run
+      
+      - name: Check for console.log
+        run: |
+          if grep -r "console\." src/ --include="*.ts" --include="*.tsx" | grep -v "console.error"; then
+            echo "⚠️ Warning: Found console statements in source code"
+          fi
+
+  # ==========================================
+  # 安全检查
+  # ==========================================
+  security-check:
+    name: Security Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run security audit
+        run: npm audit --production --audit-level=high
+        continue-on-error: true
+
+  # ==========================================
+  # 构建和部署
+  # ==========================================
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    needs: [quality-check, security-check]
+    
+    # 仅在手动触发时部署
+    if: github.event_name == 'workflow_dispatch'
+    
+    permissions:
+      contents: read
+      deployments: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build project
+        run: npm run build
+        env:
+          NODE_ENV: production
+      
+      - name: Check build output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Build directory not found"
+            exit 1
+          fi
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ index.html not found in build output"
+            exit 1
+          fi
+          echo "✅ Build output validated"
+          echo "📦 Build size: $(du -sh dist | cut -f1)"
+      
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=httping
+      
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully deployed to Cloudflare Pages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **URL**: https://httping.pages.dev" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **Build size**: $(du -sh dist | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "🕐 **Time**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "📝 **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  # ==========================================
+  # PR 预览部署
+  # ==========================================
+  preview:
+    name: Preview Deployment
+    runs-on: ubuntu-latest
+    needs: [quality-check]
+    
+    # 仅在 PR 时运行
+    if: github.event_name == 'pull_request'
+    
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Deploy preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=httping --branch=preview-${{ github.event.pull_request.number }}
+      
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Preview Deployment\n\n✅ Preview deployed successfully!\n\n🔗 **Preview URL**: https://preview-${{ github.event.pull_request.number }}.httping.pages.dev\n\n📝 This preview will be updated on each commit to this PR.`
+            })

@@ -1,0 +1,4 @@
+name = "httping"
+compatibility_date = "2025-11-20"
+
+pages_build_output_dir = "./dist"

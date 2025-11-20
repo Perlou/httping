@@ -74,7 +74,7 @@ export function Layout({ children }: LayoutProps) {
               Httping
             </h1>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              v0.1.0
+              v1.0.1
             </span>
           </div>
 

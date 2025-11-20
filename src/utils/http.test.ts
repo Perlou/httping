@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
+import { HttpRequest } from "../types";
 import {
   replaceEnvVariables,
   formatJson,
@@ -109,13 +110,13 @@ describe("http utils", () => {
         mockResponse
       );
 
-      const request = {
+      const request: HttpRequest = {
         id: "1",
-        name: "Test Request",
         url: "https://api.example.com/test",
         method: "GET",
         headers: {},
         body: "",
+        timestamp: Date.now(),
       };
 
       const response = await sendHttpRequest(request);
@@ -143,13 +144,13 @@ describe("http utils", () => {
         axios.isAxiosError as unknown as ReturnType<typeof vi.fn>
       ).mockReturnValue(true);
 
-      const request = {
+      const request: HttpRequest = {
         id: "1",
-        name: "Test Request",
         url: "https://api.example.com/fail",
         method: "GET",
         headers: {},
         body: "",
+        timestamp: Date.now(),
       };
 
       const response = await sendHttpRequest(request);

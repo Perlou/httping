@@ -1,14 +1,18 @@
 {
   "name": "tauri-apphttping",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "deploy": "./deploy.sh",
+    "deploy:check": "./scripts/pre-deploy-check.sh",
+    "deploy:force": "./deploy.sh --force",
+    "deploy:dry-run": "./deploy.sh --dry-run"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
