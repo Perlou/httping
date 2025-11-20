@@ -1,15 +1,33 @@
 import { useRequestStore } from "../store/useRequestStore";
 
 export function HistorySidebar() {
-  const { history } = useRequestStore();
+  const { history, clearHistory, setCurrentRequest } = useRequestStore();
+
+  const handleRestore = (request: any) => {
+    // Create a new object excluding the id and timestamp to avoid overwriting current request's metadata if not desired,
+    // or just overwrite everything.
+    // Based on useRequestStore, setCurrentRequest does a shallow merge.
+    // We probably want to keep the current ID or generate a new one if we are "restoring" as a new draft,
+    // but for now let's just restore the content.
+    const { id, timestamp, ...requestData } = request;
+    setCurrentRequest(requestData);
+  };
 
   return (
     <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
       {/* Sidebar header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           History
         </h2>
+        {history.length > 0 && (
+          <button
+            onClick={clearHistory}
+            className="text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       {/* History list */}
@@ -23,7 +41,9 @@ export function HistorySidebar() {
             {history.map((item, index) => (
               <div
                 key={index}
-                className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                onClick={() => handleRestore(item.request)}
+                className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group"
+                title="Click to restore"
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-medium text-gray-900 dark:text-white">
@@ -42,7 +62,7 @@ export function HistorySidebar() {
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                <div className="text-xs text-gray-600 dark:text-gray-400 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">
                   {item.request.url || "No URL"}
                 </div>
                 <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
