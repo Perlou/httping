@@ -9,7 +9,8 @@
 ## 功能特性
 
 - 🚀 支持所有 HTTP 方法（GET、POST、PUT、DELETE 等）
-- 📊 响应详情展示（Headers、Body、状态码）
+- � cURL 导入（一键导入 cURL 命令）
+- �📊 响应详情展示（Headers、Body、状态码）
 - 🕐 请求历史管理（最多 20 条）
 - 🌍 环境变量支持（Development/Production）
 - 🔑 认证支持（Bearer Token、Basic Auth）
