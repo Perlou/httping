@@ -122,7 +122,7 @@ export function RequestPanel() {
   return (
     <div className="flex-1 flex flex-col bg-surface dark:bg-gray-800 border-r border-outline/20 dark:border-gray-700">
       {/* Request URL and controls */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-outline dark:border-gray-700 p-6">
+      <div className="dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 p-6">
         <div className="flex flex-wrap items-center gap-3">
           {/* Method selector */}
           <div className="relative">
@@ -132,7 +132,7 @@ export function RequestPanel() {
                 setCurrentRequest({ method: e.target.value as HttpMethod })
               }
               disabled={isLoading}
-              className="appearance-none pl-4 pr-10 py-2.5 border border-outline dark:border-gray-600 rounded-lg bg-surface dark:bg-gray-700 text-sm font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none cursor-pointer transition-all hover:border-gray-400 dark:hover:border-gray-500 disabled:opacity-50 min-w-[120px]"
+              className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none cursor-pointer transition-all hover:border-gray-400 dark:hover:border-gray-500 disabled:opacity-50 min-w-[120px]"
             >
               <option>GET</option>
               <option>POST</option>
@@ -170,7 +170,7 @@ export function RequestPanel() {
                 }
               }}
               disabled={isLoading}
-              className="w-full px-4 py-2.5 border border-outline dark:border-gray-600 rounded-lg bg-surface dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 transition-all"
             />
           </div>
 
@@ -178,7 +178,7 @@ export function RequestPanel() {
           <button
             onClick={() => setShowImportModal(true)}
             disabled={isLoading}
-            className="px-4 py-2.5 border border-outline dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+            className="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
             title="导入 cURL 命令"
           >
             <svg
